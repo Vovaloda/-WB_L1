@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>26 задача - рекурсивный обход DOM</title>
+</head>
+<body>
+
+    <p>Откройте инструменты разработчика, консоль</p>
+    
+    <div class="firstLayer">
+        <p>firstLayer</p>
+        <div class="secondLayer">
+            <p>secondLayer</p>
+            <div class="thirdLayer">
+                <p>thirdLayer</p>
+                <span>Текст спана</span>
+                <button>Текст кнопки</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+        
+        function recursiveDOM(tagNode){ //Функция для рекурсивного обода DOM и вызова console.log дял каждого его элемента (принимает ноду элемента)
+            console.log(tagNode); //Вывод информации об элементе
+
+            const tagsChildrens = tagNode.childNodes; //Получение всех нод-детей элемента
+
+            for(let i = 0; i<tagsChildrens.length; i++){ //В цикле обходим все ноды детей
+                if(tagsChildrens[i].nodeType === 1){ //Если тип ноды является элементом (1), тогда вызываем эту же функцию на данную ноду
+                    recursiveDOM(tagsChildrens[i]);
+                }
+            }
+        }
+
+        const firstLayer = document.querySelector('.firstLayer');
+        const thirdLayer = document.querySelector('.thirdLayer');
+        const spanBlock = document.querySelector('span');
+
+        console.group('Для div.firstLayer: ');
+        recursiveDOM(firstLayer);
+        console.groupEnd();
+        console.group('Для div.thirdLayer: ');
+        recursiveDOM(thirdLayer);
+        console.groupEnd();
+        console.group('Для span: ');
+        recursiveDOM(spanBlock);
+        console.groupEnd();
+
+    </script>
+</body>
+</html>

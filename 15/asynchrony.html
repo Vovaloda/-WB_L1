@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15 задача - об асинхронности</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+        
+        async function asyncAwait(){ //Общая функция для асинхронности 
+            const url = 'https://jsonplaceholder.typicode.com/todos'; //URL, с которого будем поулчать тудушки
+
+            try{ //Попытка, с кэтчем для отлавливания ошибокы
+                const promise = await fetch(url); //Поулчение данных с сайтом и ожиданием их с await
+                const data = await promise.json(); //декодирует ответ в формате JSON и возвращает Промис, дожидается выполнения благодаря await
+                return data; //Возвращаем полученные данные
+            }catch(e){
+                return e; //Возврат ошибки
+            }
+        }
+
+        asyncAwait()
+            .then(data => console.log(data))
+            .catch(err => console.log(err));
+
+    </script>
+</body>
+</html>

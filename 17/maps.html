@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script
+  src="https://api-maps.yandex.ru/2.1/?apikey=API_KEY&lang=ru_RU"
+  type="text/javascript"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17 задача - геоКарты</title>
+</head>
+<body>
+    
+    <input type="text" placeholder="Введите адрес" id="address">
+
+    <div id="select"></div>
+
+    <script>
+        'use strict';
+
+        //Перед тестированием приложения, нужно вставить Ваш apiKey на 5 строчке ! 
+
+        ymaps.ready(init); //Когда библиотека загружена, запускается функция init
+
+        function init(){
+           const inputAddressBlock = document.querySelector('#address'); //получение Инпута
+           const selectBlock = document.querySelector('#select'); //Место, где будет список
+
+            function debounce(func, wait){ //Оболочка дебаунса
+                let timeout = null; //Изначально таймер нулевой 
+
+                return function(){ //Возвращает функцию 
+                    const self = this; //Поулчение контекста
+                    const args = arguments; //Получение аргументов, если они есть
+
+                    const after = function(){ //Когда сработает функция... 
+                        timeout = null; //Обнуление таймера
+
+                        func.apply(self, args); //Прикрепление контекста
+                    }
+
+                    clearTimeout(timeout); //Сбрасывание таймера
+
+                    timeout = setTimeout(after, wait); //Выполнение функции через передаваемое значение миллисекунд
+                }
+            }
+
+            function geocode(address){  //Функция для обработки запросов геокодирования 
+                if(address === ''){ //Ничего не делать, если адрес пустой
+                    return ;
+                }
+
+                selectBlock.innerHTML = ''; //Очищает выпадающее меню
+
+                ymaps.geocode(address).then((res) => { //Обрабатывает запросы геокодирования.
+                    res.geoObjects.each((geoObject) => {
+                        const div = document.createElement('div'); //Создаёт пустой элемент
+                        div.innerHTML = geoObject.getAddressLine(); //Показывает содержимое 
+                        div.onclick = function(){ //При нажатии на созданный блок
+                            inputAddressBlock.value = div.textContent; //Устанавливает значение поисковой строчке, равно содержимому блока
+                            selectBlock.innerHTML = ''; //Очищает выпадающее меню
+                        };
+                        selectBlock.appendChild(div); //добавляет элемент на страницу
+                    });
+                });
+            }
+
+            const search = debounce(() => { //оборачивание функции поиска
+                const address = inputAddressBlock.value; //Получение значений инпута
+                try{
+                    geocode(address); //попытаться обработать данные
+                }catch(e){
+                    console.log(e); //Вывести в логи ошибку
+                }
+            }, 1500); //Задержка 1,5 секунд 
+
+            inputAddressBlock.addEventListener('input', search); //Добавление слушателя 
+
+        }
+    </script>
+</body>
+</html>

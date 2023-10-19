@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>27 задача - анимация для элемента</title>
+</head>
+<body>
+
+    <div style="margin: 50px; width: 100px; height: 100px; background-color: aliceblue; border-radius: 50%; border: 1px dashed black"></div>
+
+    <script>
+        'use strict';
+        
+        function animEl(el){ //Функция для доабвления плавной анимации увеличения и уменьшения элемента, принимает ноду 
+            let isScale = true; //Установка переменной, отвечающей за состояние анмиации
+
+            el.style.transition= 'transform 1000ms'; //Установка плавности анмиации
+
+            function animateEl(){ //Функция, меняющая значение конченой точки роста
+                if(isScale){ //Если увеличенно
+                    isScale = false; //Изменение переменной состояния роста
+                    el.style.transform = 'scale(0.5)'; //Уменьшение элемента
+                }
+                else if(!isScale){ //Если не увеличено
+                    isScale = true; //Изменение переменной состояния роста
+                    el.style.transform = 'scale(1)'; //Увеличение элемента
+                }
+            }
+
+            setInterval(animateEl, 1100); //Запуск функции изменения размера элемента в интервале
+        }
+
+        const divBlock = document.querySelector('div');
+        animEl(divBlock);
+       
+    </script>
+</body>
+</html>

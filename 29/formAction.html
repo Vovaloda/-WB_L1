@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>29 задача - взаимодействие с формами</title>
+
+    <style>
+        .modalOverlay{
+            opacity: 1;
+            visibility: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 20;
+        }
+        .modal{
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            background-color: white;
+        }
+        .close{
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+
+    <form>
+        <input type="text" id="name" name="name" placeholder="Введите имя">
+        <input type="text" id="lastName" name="lastName" placeholder="Введите фамилию">
+        <input type="text" id="login" name="login" placeholder="Введите логин">
+        <button>Готово</button>
+    </form>
+
+    <div class="modalOverlay">
+        <div class="modal">
+            <div class="nameField">Имя: <span></span></div>
+            <div class="lastNameField">Фамилия: <span></span></div>
+            <div class="loginField">Логин: <span></span></div>
+            <button class="close">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+        
+        const form = document.querySelector('form'); //Получение элемента формы
+        const closeButton = document.querySelector('.close'); //Получение кнопки закрытия модального окна
+        const modalOverlayBlock = document.querySelector('.modalOverlay'); //Получение оверлея модального окна
+
+        closeButton.addEventListener('click', ()=>{ //Добавление ивента для кнопки закрытия модального окна по нажатии 
+            modalOverlayBlock.style.visibility = 'hidden'; //Скрытие оверлея модального окна (и всего модального окна)
+        });
+
+        function formAction(form){ //Функция для добавления функциональности форме (Принимает ноду формы)
+            form.addEventListener("submit", (e) => { //Добавление ивента при submit
+                e.preventDefault(); //Отмена стандартных действий 
+
+                const nameForm = document.querySelector('input[name="name"]'); //Получение input name
+                const lastNameForm = document.querySelector('input[name="lastName"]'); //Получение input lastName
+                const loginForm = document.querySelector('input[name="login"]'); //Получение input login
+
+                const data = { //Объект со значениями 
+                    name: nameForm.value || 'пусто', //Поулчение значения поля, если оно не пусто 
+                    lastName: lastNameForm.value || 'пусто', //Поулчение значения поля, если оно не пусто 
+                    login: loginForm.value || 'пусто', //Поулчение значения поля, если оно не пусто
+                }
+
+                const nameField = document.querySelector('.nameField span'); //Получение элемента в модальном окне
+                const lastNameField = document.querySelector('.lastNameField span'); //Получение элемента в модальном окне
+                const loginField = document.querySelector('.loginField span'); //Получение элемента в модальном окне
+
+                modalOverlayBlock.style.visibility = 'visible'; //Сделать модальное окно видимым
+                nameField.textContent = data.name; //Установить элементу значение из формы
+                lastNameField.textContent = data.lastName; //Установить элементу значение из формы
+                loginField.textContent = data.login; //Установить элементу значение из формы
+
+            });
+        }
+
+        formAction(form); //Вызов функции с формой
+
+    </script>
+</body>
+</html>

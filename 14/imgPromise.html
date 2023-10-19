@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14 задача - промис для картинки</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <div class="imgBlock">
+        
+    </div>
+
+    <script>
+        'use strict';
+        
+        function loadImage(url){ //Общая функция загрузки картинки 
+            return new Promise((resolve, reject) => { //Возвращает промис
+                const imgBlock = document.querySelector('.imgBlock'); //получает элемент с определённым классом
+                const img = new Image(); //Переменная для изображения
+                img.src = url; //Установка URL для изобржения 
+
+                img.onload = () => { //При успешной загрузки картинки 
+                    resolve({ //Возвращаем результат, состоящий из URL, ширины и высоты изображения
+                        imgURL : url,
+                        imgWidth : img.width,
+                        imgHeigth : img.height,
+                    });
+
+                    imgBlock.appendChild(img); //Также загружаем на сайт изображение
+                }
+
+                img.onerror = () => { //При неудачной загрузке изображения
+                    reject(new Error(`Ошибка при загрузке изображения по url: ${url}`)); //Отправляем ошибку
+                }
+            });
+        }
+
+        const imgUrl = 'https://i.yapx.cc/WMaRv.jpg';
+        
+        loadImage(imgUrl)
+            .then((resolve) => console.log(resolve))
+            .catch((reject) => console.log(reject));
+
+
+    </script>
+</body>
+</html>

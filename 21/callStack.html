@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>21 задача - максимальный объём коллстека браузеров</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+
+        function callStackMemory(){ //Функция-обёртка для рекурсивной функции
+            let count = 0; //Переменная для счётчика
+
+            function callStackMemoryFunc(){ //Функция-рекурсия
+                count++; //Увеличивает показание счётчика
+                callStackMemoryFunc(); //Вызывает саму себя
+            }
+
+            try{ //Пытаемся вызвать очередную функцию
+                callStackMemoryFunc(); //Вызов функции
+            }catch(e){ //Если поулчили ошибку
+                console.log('В текущем браузере размер коллстэка: ' + count); //Выводим информацию о количестве проделенных итераций
+            }
+        }
+
+        callStackMemory(); //Вызов функции 
+
+        console.group('Размеры коллстэков разных браузеров');
+        console.log('В Фаерфокс браузере размер коллстэка: 32597');
+        console.log('В Гугл Хром браузере размер коллстэка: 13948');
+        console.log('В Опере браузере размер коллстэка: 13970');
+        console.log('В Сафари браузере нет возможности проверить');
+        console.groupEnd();
+
+    </script>
+</body>
+</html>

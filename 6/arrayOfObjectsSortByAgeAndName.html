@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6 задача - сортировка массива объектов</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+
+        function sortByAgeAndName(objectsArray){ //Функция возвращает новый массив, сортируя по возрастанию (по возрасту), либо по алфавиту (по имени), если по возрасту равны
+            return [...objectsArray].sort((a, b) => { //создаётся новый массив с помозью спред (чтобы не менять старый) и применяется правила сортировки
+                if(a.age === b.age){ //Если возрастом равны, тогда сранить по имени (по алфавиту)
+                    return a.name.localeCompare(b.name);
+                }
+                
+                return a.age - b.age; //Сравнение по возрасту
+            });
+            
+        }
+        
+        //Массив объектов
+        const arrayOfObjects = [ 
+            {
+                name: "Maks",
+                age: 21,
+            },
+            {
+                name: "Dana",
+                age: 23,
+            },
+            {
+                name: "Anna",
+                age: 18,
+            },
+            {
+                name: "Petr",
+                age: 21,
+            },
+            {
+                name: "Maria",
+                age: 18,
+            },
+            {
+                name: "Oleg",
+                age: 18,
+            },
+        ];
+
+        console.log('Отсортрованный массив: ');
+        console.log(sortByAgeAndName(arrayOfObjects));
+
+    </script>
+</body>
+</html>

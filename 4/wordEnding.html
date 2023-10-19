@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 задача - изменение окончания слов</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль (без запуска локального сервера, может не ругаться на модуль)</p>
+
+    <script type="module">
+        'use strict';
+
+        import wordEndingChanger from './wordEndingModule.js'; //Импорт 
+
+        console.log("112 " + wordEndingChanger.format(112, ['сообщение', 'сообщения', 'сообщений']));
+        console.log("12 " + wordEndingChanger.format(12, ['сообщение', 'сообщения', 'сообщений']));
+        console.log("1 " + wordEndingChanger.format(1, ['сообщение', 'сообщения', 'сообщений']));
+        console.log("-121 " + wordEndingChanger.format(-121, ['пользователь', 'пользователя', 'пользователей']));
+        console.log("2 " + wordEndingChanger.format(2, ['пользователь', 'пользователя', 'пользователей']));
+        console.log("3 " + wordEndingChanger.format(3, ['пользователь', 'пользователя', 'пользователей']));
+        console.log("1024 " + wordEndingChanger.format(1024, ['пользователь', 'пользователя', 'пользователей']));
+        console.log("1026 " + wordEndingChanger.format(1026, ['пользователь', 'пользователя', 'пользователей']));
+        console.log("121 " + wordEndingChanger.format(121, ['пользователь', 'пользователя', 'пользователей']));
+        console.log("1 " + wordEndingChanger.format(1, ['пользователь', 'пользователя', 'пользователей'])); 
+        console.log("0 " + wordEndingChanger.format(0, ['пользователь', 'пользователя', 'пользователей']));
+    </script>
+</body>
+</html>

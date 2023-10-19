@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12 задача - книга</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+
+        const book = {
+            title: 'Гарри Поттер',
+            author: 'Дж. К. Роулинг',
+            year: 1997,
+        }
+
+        //Первое решение с помощью точки
+
+        function getTitle(book){ //Получение названия
+            return book.title;
+        }
+
+        function getAuthor(book){ //Получение имени автора
+            return book.author;
+        }
+
+        function getYear(book){ //Получение года публикации книги
+            return book.year;
+        }
+
+        function setTitle(book, newTitle){ //Установка нового названия
+            book.title = newTitle;
+        }
+
+        function setAuthor(book, newAuthor){ //Установка нового автора
+            book.author = newAuthor;
+        }
+
+        function setYear(book, newYear){ //Установка нового года публикации книги
+            book.year = newYear;
+        }
+
+        console.group('Получение данных до изменений');
+        console.log('Название книги: ' + getTitle(book));
+        console.log('Автор книги: ' + getAuthor(book));
+        console.log('Год выпуска книги: ' + getYear(book));
+        console.groupEnd();
+
+        setAuthor(book, 'Гэри Чапман');
+        setYear(book, 1992);
+        setTitle(book, 'Пять языков любви');
+
+        console.group('Получение данных после изменений');
+        console.log('Название книги: ' + getTitle(book));
+        console.log('Автор книги: ' + getAuthor(book));
+        console.log('Год выпуска книги: ' + getYear(book));
+        console.groupEnd();
+        
+    </script>
+</body>
+</html>

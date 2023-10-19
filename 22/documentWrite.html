@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>22 задача - documentWrite</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+        
+        function documentWriteGenerate(n){ //Функция для генерации строки типа document.write(document.write()), где количество равно передаваемому числу
+            let resultStr = ''; //Переменная для результирующей строки
+            for(let i = 0; i < n; i++){ // печатаем document.write( столько раз, сколько получили аргументом
+                resultStr += 'document.write(';
+            }
+
+            resultStr += ')'.repeat(n); //Добавляем к строке нужное количество закрывающих скобок
+
+            return resultStr; //Возвращаем результирующую строку
+        }
+
+        function documentWriteTest(){ //Фунцкция, котора вызывает document.wire() внутри другого document.write()
+            let count = 1; //Переменная для счётчика
+
+            while(true){ //Бесконечный цикл
+                try{ //Пытаемся
+                    new Function(documentWriteGenerate(count))(); //Получить очередное количество document.write() внутри себя же и вызывать это, переведя строку команду
+                    count++; //Увеличиваем счётчик
+                }catch(e){ //Если поймали ошибку, выводим количество итераций и информацию об ошибке
+                    console.log('Ошибка при ' + count + ' итерации. Ошибка: ' + e);
+                    break;
+                }
+            }
+        }
+
+        documentWriteTest(); //Вызов функции
+
+        console.group('Результаты исследования: ');
+        console.log('Для разных браузеров результат получается разный. Для Файерфокс - 1592 итерации, а для Гугл Хром - 1420');
+        console.log('В зависимости от браузера, получается разная ошика, так для FireFox - это InternalError: too much recursion, а для Гугл Хром Ошибка: RangeError: Maximum call stack size exceeded');
+        console.log('При этом на страницу будет выведено столько undefined, сколько было вызовов функций');
+        console.log('Получается, что это задача зависит от определённых ограничений различных браузеров и причины этих ограничений могут быть разные, как слишком длинная рекурсия, так и, например, долгое выполнение программы')
+        console.groupEnd();
+
+    </script>
+</body>
+</html>

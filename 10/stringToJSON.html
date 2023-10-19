@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 задача - string to JSON</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+
+        //Первое решение с помощью парсинга
+        function jsonParse(json) { //Основная функция парсера
+            json = json.replace(/("[^"]*")|\s/g, '$1'); // убрать все лишние пробелы (остаются те, что находятся между двойными кавычками)
+
+            const numberPattern = /[-+]?\d+(\.\d*)?([eE][-+]?\d+)?/; //Регулярка для првоерки на число
+
+            let index = 0; //Индекс
+
+            function parseValue(){ //Функция для того, чтобы понять тип элемента
+
+                if(json.slice(index, index + 4) === 'true'){ //Если булевое значение true
+                    index += 4; //сдвигается индекс
+                    return true; //Возвращается true
+                }
+
+                if(json.slice(index, index + 5) === 'false'){ //Если булевое значение false
+                    index += 5; //Сдвигается индекс
+                    return false; //Возвращается false
+                }
+
+                if(json.slice(index, index + 4) === 'null'){ //Если значение null
+                    index += 4; //Сдвигается index 
+                    return null; //возвращается null
+                }
+
+                if(numberPattern.test(json[index])){ //Если число
+                    return parseNumber(); //Возвращаем значение числа
+                }
+
+                if(json[index] === '"'){ //Если строка
+                    return parseString(); //Возвращаем значение строки
+                }
+
+                if(json[index] === '['){ //Если массив
+                    return parseArray(); //Возвращается массив целиком
+                }
+
+                if(json[index] === '{'){ //Если объект
+                    return parseObject(); //Возвращается объект целиком
+                }
+
+                throw new Error("Не поддерживаемый формат !"); //При другим элементах, отправляется ошибка
+            }
+
+            function parseNumber(){ //Функция для парсинга числа
+                const start = index; //Начальная позиция 
+
+                while(numberPattern.test(("" + json[index])) && index < json.length){ // Првоерка на принадлежность к числу и не окончании строки
+                    index++; //прибавляется индекс
+                }
+
+                const value = json.slice(start, index+1); //Получение значения числа
+
+                return parseFloat(value); //Возврат числа
+            }
+
+            function parseString(){ //Парсинг строки
+                index++; // пропуск кавычки
+
+                const start = index; //Начальное положение 
+
+                while(json[index] !== '"' && index < json.length){ //Цикл пока не найдёт вторую кавычку или не закончится строка
+                    index++; //Прибавление индекса
+                }
+
+                const value = json.slice(start, index); //Поулчение значения строки
+
+                index++; //Пропуск закрывающей кавычки 
+
+                return value; //Возврат значения строки 
+            }
+
+            function parseArray(){ //Парсинг массива
+                const result = []; //Результирующий массив
+                
+                index++; //Пропуск открывающей скобки
+
+                while(json[index] !== ']' && index < json.length){ //Цикл пока не найдёт закрывающую скобку или пока не закончится строка
+                    result.push(parseValue()); //В массив добавляется значение элемента
+                    
+                    if(json[index] === ','){ //Пропуск запятых в массиве
+                        index++
+                    }
+                }
+
+                index++; //Пропуск закрывающей скобки
+                
+                return result; //Возвращает результирующий массив
+            }
+
+            function parseObject(){ //Парсинг объекта
+                const result = {}; //Результирубщий объект
+
+                index++; //Пропуск открывающей фигурной скобки
+
+                while(json[index] !== '}' && index < json.length){ //Цикл пока не дойдёт до конца строки или не найдёт закрывающую скобку
+                    const key = parseString(); //Получение ключа объекта
+                    
+                    index++; //Пропуск двоеточия
+                    
+                    result[key] = parseValue(); //Поулчение значение элемента
+
+
+                    if(json[index] === ','){ //Пропуск запятых вобъекте
+                        index++;
+                    }
+                }
+
+                index++; //Пропуск закрывающей фигурной скобки
+
+                return result; //Возвращает результирубщий массив
+            }
+
+            return parseValue(); //Запускает функцию распознования элемента
+        }
+
+        const json = '{"myame":   "Tadeck","myinterests":["programming","games","artificial intelligence","business models"],"mydata":{"age":"not your business","something":5,"friends":["A",{"a1":"A1"},"B","C"]},"age":85,"virgin":true,"arr":[3,true,null,"test","test2","test3"],"n":null}';
+        console.log(jsonParse(json));
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2 задача о странных числах</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+        
+        const strangeNumbers = [
+            33550336, //Странное число
+            1, //Странное число
+            6, //Странное число
+            28, //Странное число
+            2, //Не странное число
+            3, //Не странное число
+            45456, //Не странное число
+            0,  //Не странное число
+        ];
+
+        //Функция для определения странного числа
+        //Принимает число, возвращает true или false
+        function isStrangeNumber(num){
+            let dividerSum = 1; //Переменная для суммы делителей
+
+            if(num <= 0){ //Если число отрицательное или нуль, возвращает false 
+                return false;
+            }
+
+            for(let i = 2; i < num; i++){ //Цикл от 1 до самого числа (не включая его)
+                if(dividerSum > num){ //Если сумма делителей уже больше числа, тогда возвращает false;
+                    return false;
+                }
+
+                if(num % i === 0){ //Если число делится без остатка на делитель, тогда изменяется сумма делителей
+                    dividerSum+=i;
+                }
+            }
+
+            return num === dividerSum; //Возвращает true, если число равно сумме делителей, иначе false
+        }
+
+        console.group('Функция isStrangeNumber:');
+        strangeNumbers.forEach(el => {
+            console.log(el + " - странное число ? " + isStrangeNumber(el));
+        });
+        console.groupEnd();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 задача - аналог библиотеки Math</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+
+        const mathX = function(N){ //Обёртка для замыкания
+
+            const fibonacciMemo = {}; //Объект, в котором хранятся уже найденные значения для чисел Фиббоначи
+            const simpleNumbersMemo = []; //Массив, в котором хранятся уже найденные простые числа
+
+            function isSimple(n){ //Проверка числа на то, является ли оно простым
+                if(n % 2 === 0 || n % 3 === 0){ //сразу возвращает false для чисел, кратных 2 или 3
+                    return false;
+                }
+                for(let i = 2; i <= n/2; i++){ //Цикл от 2 до n/2 
+                    if(n % i === 0){ //Если делится без остатка, то возвращаем false
+                        return false;
+                    }
+                }
+                return true; //Если ни один делитель не поделился без остатка, возвращается true
+            }
+
+            return {
+                fibonacci: function(n = N){ //Функция для вычисления N-го числа в ряду Фиббоначи 
+                    if(n in fibonacciMemo){ //Если значение уже было найдено, то просто получаем его из объекта
+                        return fibonacciMemo[n]; 
+                    }
+
+                    if(n <= 0){
+                        fibonacciMemo[n] = 0; //Добавление найденного значения в объект
+                    }
+                    else if(n < 2){
+                        fibonacciMemo[n] = n; //Добавление найденного значения в объект
+                    }
+                    else{
+                        fibonacciMemo[n] = this.fibonacci(n-1) + this.fibonacci(n-2); //Добавление найденного значения в объект (также вычисление этого значения в рекурсивной функции)
+                    }
+
+                    return fibonacciMemo[n]; //Возвращение найденного результата 
+                },
+
+                fibonacciSeries: function(n = N){ //Функция для вычисления всех чисел в ряду Фибоначчи до числа N (включительно)
+                    const fibonacciSeriesArray = []; //Пустой массив с числами
+
+                    if(n <= 0){ //Если n <= 0, то в массив добавляется 0 
+                        fibonacciSeriesArray.push(0);
+                    }
+
+                    for(let i = 0; i <= n; i++){ //Цикл для всех целых чисел от 0 до n 
+                        fibonacciSeriesArray.push(this.fibonacci(i)); //добавление в массив вычисленного значения для n-ого числа в ряду Фиббоначи
+                    }
+
+                    return fibonacciSeriesArray; //Возвращение массива
+                },
+
+                simpleNumber: function(n = N){ // вычисление N-го просто числа
+                    let countSimpleNumbers = 2; //Начальная позиция счётчика количества простых числе
+                    let currentNumber = 3; //Текущее число
+
+                    if(n <= 1){ //Если n<=1, возвращает 2
+                        return 2;
+                    }
+                    if(n === 2){//Если n<=2, возвращает 3
+                        return 3;
+                    }
+
+                    while(countSimpleNumbers < n){//Цикл, пока количество найденных прсотых чисел меньше n
+                        const positionInSimpleNumbersMemo = simpleNumbersMemo.indexOf(countSimpleNumbers); //Позиция числа в массиве простых чисел
+                        if(positionInSimpleNumbersMemo != -1 ){ //Если число есть в массиве простых чисел
+                            countSimpleNumbers++; //Инкремент счётчика
+                        }
+                        else if(isSimple(currentNumber)){ //Если предыдущее не выполнено и число простое
+                            countSimpleNumbers++; //Инкремент счётчика
+                        }
+
+                        if(countSimpleNumbers < n){ //Если количество найденных простых чисел меньше n
+                            currentNumber+=2; //К текущему числу прибавляется 2 (чётные числа нет смысла проверять)
+                        }
+                    }
+
+                    return currentNumber; //Возвращение текущего числа
+                },
+
+                simpleNumbersSeries: function(n = N){ // вычисление всех простых чисел до числа N (включительно)
+                    const simpleNumbersArray = []; //Массив простых чисел
+
+                    if(n < 2){ //если число меньше 2, просто вернём 2
+                        return 2;
+                    }
+                    
+                    for(let i = 2; i <= n; i++){ //Цикл от 2 до самого числа
+                        const positionInSimpleNumbersMemo = simpleNumbersMemo.indexOf(i); //Позиция числа в массиве простых чисел
+                        if(positionInSimpleNumbersMemo != -1 ){ //Если число есть в массиве простых чисел
+                            simpleNumbersArray.push(simpleNumbersMemo[positionInSimpleNumbersMemo]); //В возвращаемый массив добавляется число из массива найденных чисел
+                        }
+                        else if(isSimple(i)){ //Если число простое
+                            simpleNumbersMemo.push(i); //добавляется в массив найденных простых чисел
+                            simpleNumbersArray.push(i); //добавляется в возвращаемый массив
+                        }
+                    }
+                    
+                    return simpleNumbersArray; //Возвращение массива
+                },
+            }
+        }
+
+        const mathX5 = mathX(5);
+        console.group('mathX для 5: ');
+        console.log("вычисление 5-го числа в ряду Фибоначчи: " + mathX5.fibonacci());
+        console.log("вычисление всех чисел в ряду Фибоначчи до числа 5: " + mathX5.fibonacciSeries());
+        console.log("вычисление 5-го просто числа: " + mathX5.simpleNumber());
+        console.log("вычисление всех простых чисел до числа 5: " + mathX5.simpleNumbersSeries());
+        console.groupEnd();
+
+        const mathX100 = mathX(100);
+        console.group('mathX для 100: ');
+        console.log("вычисление 100-го числа в ряду Фибоначчи: " + mathX100.fibonacci());
+        console.log("вычисление всех чисел в ряду Фибоначчи до числа 100: " + mathX100.fibonacciSeries());
+        console.log("вычисление 100-го просто числа: " + mathX100.simpleNumber());
+        console.log("вычисление всех простых чисел до числа 100: " + mathX100.simpleNumbersSeries());
+        console.groupEnd();
+
+    </script>
+</body>
+</html>

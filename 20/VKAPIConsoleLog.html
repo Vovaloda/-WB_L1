@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
+    <style>
+        .widget{
+            width: 800px;
+            height: 800px;
+            overflow-y: auto; 
+            overflow-x: hidden;
+            background-color: azure;
+            border: 1px solid black;
+            padding: 5px; 
+        }
+
+        .posts-list{
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px;
+        }
+
+        .post{
+            border: 1px solid black;
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+        }
+
+        .post__info{
+            margin-top: 15px;
+            display: flex;
+            flex-direction: row;
+            font-size: 12px;
+            justify-content: space-between;
+        }
+
+        .post__date, .post__likes, .post__views, .post__reposts, .post__comments{
+            color: grey;
+        }
+
+    </style>
+    <title>20 задача - API ВК и информация в логи</title>
+</head>
+<body>
+    
+    <div class="widget">
+        <h1>Посты: </h1>
+        <hr>
+        <div class="posts-list">
+        </div>
+    </div>
+
+    <div class="post" style="display : none;">
+        <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste eum officiis a facere tempore iusto molestiae blanditiis incidunt temporibus eligendi cum recusandae repellat provident vero quia consequatur corporis sapiente numquam, adipisci enim! Quod obcaecati expedita molestias vel officia nobis, repellendus saepe nostrum molestiae incidunt veritatis ratione odit placeat soluta possimus quaerat nesciunt. Quae, provident voluptatibus! Quod voluptatem similique tenetur dignissimos ab illum architecto exercitationem corporis minus, amet, quos optio! Aliquid excepturi nesciunt iste eum et impedit consectetur, harum perferendis? Eum, animi possimus! Vel repudiandae, quia tenetur ex ratione deserunt molestiae eos accusantium dignissimos fuga? Quidem dolorem consectetur ipsam dicta mollitia?</span>
+        <div class="post__info">
+            <div class="post__date">
+                Дата публикации: <span>ДАТА</span>
+            </div>
+            <div class="post__views">
+                Просмотров: <span>ПРОСМОТРЫ</span>
+            </div>
+            <div class="post__likes">
+                Лайков: <span>Лайки</span>
+            </div>
+            <div class="post__comments">
+                Комментариев: <span>КОММЕНТЫ</span>
+            </div>
+            <div class="post__reposts">
+                Репостов: <span>Репосты</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+        
+        //Перед тестированием вставьте API access token на 132 строчке ! 
+
+        const widget = document.querySelector(".widget"); //Получение блока с Виджетом
+        const postsList = document.querySelector(".posts-list"); //Получение блока со списком постов 
+        let isLoading = false; //Установка значения загрузки на false
+        let offset = 0; // Смещение по старту постов 
+        const posts = []; //Массив постов
+
+        function getLocalStorageSize(){ //Функция для получения максимального объёма памяти локального хранидища
+            let val = 'a'.repeat(1024 * 1024); //Символ, которым будем заполняться локальное хранилище
+
+            localStorage.clear(); //Очистка локального хранилища
+
+            while(true){  //Бесконечный цикл
+                try{
+                    localStorage.setItem('ls', val); // попытка добавить в локальное хранилище больше информации
+                    val += 'a'.repeat(1024 * 1024); //Увеличение данных, добавляемых в локальное хранилище
+                }catch(e){ //Если выскочила ошибка при попытке добавить данные в локальное хранилище
+                    break; //Выходим из бесконечного цикла
+                }
+            }
+
+            localStorage.clear(); //Очистка локального хранилища
+            localStorage.setItem('localStorageMemory', val.length); //Установка максимального объёма локального хранилиза в локальное хранилище
+            return val.length; //Возвращение максимального объёма локального хранилища
+        }
+        
+        const localStorageSize = localStorage.getItem('localStorageMemory') || getLocalStorageSize(); //Поулчение максимального объёма локального хранилища из него же, либо благодаря функции
+
+        const observer = new IntersectionObserver(entries => { //Обсёрвер
+
+            entries.forEach((entry) => { //Для всех передаваемых элементов
+                if (entry.isIntersecting) { //Если за элементом установлена слежка
+                    observer.unobserve(entry.target); //Удалить этуслежку
+
+                    getPosts(); //Загрузить новые посты
+                }
+            })
+        });
+
+
+        function getPosts(){ //Функция для загрузки новых постов
+            if(isLoading){ //Если уже идёт загрузка постов, не нужно грузить новые
+                return;
+            }
+
+            isLoading = true; //Установка переменной загрузки на true
+            const documentHead = document.querySelector('head'); //Поулчение элемента head
+            const script = document.createElement('SCRIPT'); //Создание нового элемента (скрипт)
+            const ownerId = -1; //id группы (знак минус указывает на то, что это именно группа)
+            const version = 5.131; //Версия API 
+            const count = 20; //Количество загружаемых постов
+            const callback = 'vkWallGet'; //Функция, которая будет вызвана при загрузке постов 
+            const accessToken = 'API_KEY'; //Ключ доступа
+
+            script.src = `https://api.vk.com/method/wall.get?owner_id=${ownerId}&v=${version}&access_token=${accessToken}&count=${count}&offset=${offset}&callback=${callback}`; //Установка ссылки скрипта 
+            documentHead.appendChild(script); //Доабвление скрипта в Head
+            offset += count; //Смещение оффсета на количество полученных постов 
+        }
+
+        function vkWallGet(res){ //Эта функция вызывается при получении постов 
+            res = res.response.items; //Изменение того, что получили в более удобный формат 
+            createPosts(res); //Передача полученной информации в функцию создания постов
+            casheData(res); //Передача полученной информации в функцию кэширования информации
+            isLoading = false; //Устанвока значения загрузки на false 
+        }
+
+        function createPosts(data){ //Функция для создания постов 
+
+            const divToPostNode = document.querySelector('.post'); //Поулчение ноды элемента поста
+            data.forEach(el => { //Цикл для всех полученных элементов 
+                if(typeof(el) === 'string'){ //Если они в формате string, значит, сразу добавлять их в массив (значит, они уже были захэшированы)
+                    posts.push(el);
+                    return;
+                }
+
+                const divToPostNodeCopy = divToPostNode.cloneNode(true); //Копирование Ноды поста
+                const divToPostText = divToPostNodeCopy.children[0]; //Поулчение места, куда вставляется текст поста
+                const divToDate = divToPostNodeCopy.children[1].children[0].children[0];//Поулчение места, куда вставляется дата поста
+                const divToViews = divToPostNodeCopy.children[1].children[1].children[0];//Поулчение места, куда вставляются просмотры поста
+                const divToLikes = divToPostNodeCopy.children[1].children[2].children[0]; //Поулчение места, куда вставляюься лайки поста
+                const divToComments = divToPostNodeCopy.children[1].children[3].children[0]; //Поулчение места, куда вставляются комменты поста
+                const divToReposts = divToPostNodeCopy.children[1].children[4].children[0]; //Поулчение места, куда вставляются репосты поста
+
+                divToPostNodeCopy.style.display = 'block'; //Установка данному элементу display: block
+                divToPostText.textContent = el.text ? el.text : 'Пусто'; //Если в посте есть текст, значит установить его
+                divToDate.textContent = el.date ? new Date(el.date * 1000).toLocaleString("ru") : 'Пусто'; //Если в посте есть дата, значит, установить её
+                divToViews.textContent = el.views ? el.views.count : 'Пусто'; //Если в посте есть просмотры, значит, Установить их
+                divToLikes.textContent = el.likes ? el.likes.count: 'Пусто'; //Если в посте есть лайки, значит, установить их
+                divToComments.textContent = el.comments ? el.comments.count : 'Пусто'; //Если в посте есть комменты, значит, установить их
+                divToReposts.textContent = el.reposts ? el.reposts.count : 'Пусто'; //Если в посте есть репосты, значит, установить их
+
+                const divToPostNodeCopyText = divToPostNodeCopy.outerHTML; //Перевод ноды в текст
+
+                posts.push(divToPostNodeCopyText); //Добавление поста в массив постов
+            });
+
+            postsList.innerHTML = posts.join(''); //Объединение массива постов в строку и добавление их на страницу 
+
+            const lastPost = postsList.lastElementChild; //получение крайнего поста
+
+            observer.observe(lastPost); //Установка слежки за крайним постом
+        }
+
+        function loadPosts(){ //Функция для загрузки постов
+            const cashedPosts = localStorage.getItem('posts'); //Получение постов из локального хранилища
+
+            if(cashedPosts){ //Если есть посты в локальном хранилище
+                
+                const cashedData = JSON.parse(cashedPosts); //Поулчить посты 
+
+                createPosts(cashedData); //Отправить их в функцию создания постов на странице
+
+                const lastPost = postsList.lastElementChild; //Получение крайнего поста
+
+                observer.observe(lastPost); //Установка за ним слежки
+
+                offset += cashedData.length; //Смещение оффсета
+            }
+            else if(!cashedPosts){ //Если постов нету
+                getPosts(); //Поулчить посты
+            }
+        }
+
+        function casheData(data){ //ункция хэширования
+
+            const dataToString = JSON.stringify(data); //Получение постов в виде строки 
+
+            //Цикл, пока сумма длины постов и новая порция постов больше размера локального хранилища
+            while(JSON.stringify(posts).length + dataToString.length > localStorageSize){
+                posts.shift(); //Удаление первого поста
+            }
+
+            localStorage.setItem('posts', JSON.stringify(posts)); //Сохранение постов в локальное хранилище
+
+            console.group('Локальное хранилище. Объём');
+            console.log('Занятый объём хранилища: ' + (JSON.stringify(posts).length + dataToString.length)); //Вывод в консоль информации о том, сколько занято объёма хранилища
+            console.log('Максимальный объём хранилища: ' + localStorageSize); //Вывод в консоль информации о том, какой максимальный объём хранилища
+            console.log('Процент занятости хранилища: ' + ((JSON.stringify(posts).length + dataToString.length)/localStorageSize) * 100); //Вывод в консоль информации о проценте занятого объёма хранилища
+            console.groupEnd();
+        }
+
+        loadPosts(); //Вызов функции для загрузки постов
+
+    </script>
+</body>
+</html>

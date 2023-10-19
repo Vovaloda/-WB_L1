@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1 задача про палиндром</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+
+        const palindroms = [
+            "аргентина манит негра", //Палиндром
+            "Madam, I'm Adam", //Палиндром
+            "Не палиндром", //Не палиндром
+            '', //Палиндром 
+            '1235321', //Палиндром
+            '123321', //Палиндром
+        ];
+
+        //Третья реализция через рекурсию 
+        //Принимает строку, возвращает true false
+        function isPalindrom3(str){
+            str = str
+                .replaceAll(/[^\da-zA-Zа-яёА-ЯЁ]/g, "") //Убирает любые символы, кроме букв, цифр
+                .toLowerCase(); //Приводит к нижнему регистру 
+
+           function strCheckAndSlice(subStr){ //Функция, в которая вызывает сама себя, если крайние символы слева и справа равны, иначе возвращается false
+
+                if(subStr.length < 2){ //Возврвщает true, если длина подстроки меньше 2
+                    return true
+                }
+
+                if(subStr[0] === subStr[subStr.length - 1]){ //Если крайние левый и правый символы равны, вызывает эту же функцию без данных символов
+                    return strCheckAndSlice(subStr.slice(1, subStr.length-1));
+                }
+
+                return false; //Если символы не равны и длина подстраки больше 2, возвращает false
+           }
+
+           return strCheckAndSlice(str); //Возващает true или false в зависимости от того, как выполнится рекурсивная функция
+        }
+
+        console.group('Функция isPalindrom3(рекурсия) :');
+        palindroms.forEach(el => {
+            console.log(el + " - палиндром ? " + isPalindrom3(el));
+        });
+        console.groupEnd();
+
+    </script>
+</body>
+</html>

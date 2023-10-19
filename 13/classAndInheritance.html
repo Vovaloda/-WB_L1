@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13 задача - о классе и наследовании</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+        
+        class Shape{ //Класс "Фигура"
+            constructor(){ 
+                this.type = 'Shape'; //Тип фигуры 
+            }
+
+            getArea(){
+                return 0; //Возвращаемая площадь
+            }
+
+            getPerimetr(){
+                return 0; //Возвращаемый периметр
+            }
+        }
+
+        class Rectangle extends Shape{ //Класс прямоугольник
+            constructor(width, height){ //В конструкторе получаем его длину и высоту
+                super(); //Ничего не передаём в класс-предок
+                this.type = 'Rectangle'; // Тип фигуры
+                this.width = width; //Установка длины 
+                this.height = height; //Установка ширины 
+            }
+
+            getArea(){ //Вычисление площади
+                return this.width * this.height;
+            }
+
+            getPerimetr(){ //вычисление периметра
+                return 2* (this.width + this.height);
+            }
+        }
+
+        class Circle extends Shape{ //Класс "окружность"
+            constructor(radius){ //В конструктор поулчаем раудиус
+                super(); //Ничего не передаём в класс-предок
+                this.type = 'Circle'; //Тип фигуры 
+                this.radius = radius; //Радиус
+            }
+
+            getArea(){ //Вычисление площади
+                return Math.PI * Math.pow(this.radius, 2);
+            }
+
+            getPerimetr(){ //Вычисление периметра
+                return 2* Math.PI * this.radius;
+            }
+        }
+
+        class Triangle extends Shape{ //Класс "Треугольник"
+            constructor(side1, side2, side3){ //В конструктор передаём три стороны треугольника
+                super(); //В класс-предок ничего не передаём 
+                this.type = 'Triangle'; //Тип фигруы
+                this.side1 = side1; //Первая сторона треугольника
+                this.side2 = side2; //Вторая сторона треугольника
+                this.side3 = side3; //Третья сторона треугольника
+            }
+
+            getArea(){ //Вычисление площади треугольника
+                const p = this.getPerimetr()/2;
+
+                return Math.sqrt(p * (p - this.side1) * (p - this.side2) * (p - this.side3));
+            }
+
+            getPerimetr(){ //Вычисление периметра треугольника
+                return this.side1 + this.side2 + this.side3; 
+            }
+        }
+
+        const rectangle = new Rectangle(5, 8);
+        console.group('Прямоугольник со сторонами 5 и 8:');
+        console.log('Площадь: ' + rectangle.getArea());
+        console.log('Периметр: ' + rectangle.getPerimetr());
+        console.groupEnd();
+
+        const circle = new Circle(3);
+        console.group('Окружность  с радиусом 3:');
+        console.log('Площадь: ' + circle.getArea());
+        console.log('Периметр: ' + circle.getPerimetr());
+        console.groupEnd();
+        
+        const triangle = new Triangle(5, 8, 6)
+        console.group('Треугольник со сторонами 5, 8 и 6:');
+        console.log('Площадь: ' + triangle.getArea());
+        console.log('Периметр: ' + triangle.getPerimetr());
+        console.groupEnd();
+    </script>
+</body>
+</html>

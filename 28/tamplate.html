@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>28 задача - использование шаблонов</title>
+</head>
+<body>
+    
+    <div class="users">
+
+    </div>
+
+    <template>
+        <div class="user">
+            <h3>User</h3>
+            <p class="id">ID placeholder</p>
+            <p class="isJob">IsJob placeholder</p>
+            <p class="name">Name placeholder</p>
+            <hr>
+        </div>
+    </template>
+
+    <script>
+        'use strict';
+        
+        const users = [ //Массив пользователей
+            {
+                id: 1,
+                isJob: false,
+                name: 'Andrew',
+            },
+            {
+                id: 3,
+                isJob: true,
+                name: 'Ann',
+            },
+            {
+                id: 5,
+                isJob: true,
+                name: 'Kolya',
+            },
+        ];
+
+        function createWithTemplate(arr){ //Функция для создания элемента по шаблону (принимает массив)
+            const usersField = document.querySelector('.users'); //Получение элемента, куда вставлять данные 
+
+            const tamplete = document.querySelector('template'); //Получение шаблона
+            const userId = tamplete.content.querySelector('.id'); //получение поля ID пользователя шаблона
+            const userIsJob = tamplete.content.querySelector('.isJob'); //получение поля статуса работы пользователя шаблона
+            const userName = tamplete.content.querySelector('.name'); //получение поля имени пользователя шаблона
+
+            arr.forEach((el) => { //Для всех элементов массива 
+                userId.textContent = 'id: ' + el.id; //Изменение шаблона с новыми данными по полю id
+                userIsJob.textContent = 'Статус работы: ' + (el.isJob ? 'работает' : 'безработный'); //Изменение шаблона с новыми данными по полю isJob
+                userName.textContent = 'Имя: ' + el.name; //Изменение шаблона с новыми данными по полю name
+
+                let userBlock = tamplete.content.cloneNode(true); //Копирование содержимого шаблона
+                usersField.appendChild(userBlock); //добавление на сайт созданного элемента
+            });
+        }
+
+        createWithTemplate(users); //Вызов функции с массивом пользователей
+
+    </script>
+</body>
+</html>

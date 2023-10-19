@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9 задача - JSON to string</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+
+        function isCyclic(obj, stack = []){ //Функция для проверки цикличности в объекте 
+            if(obj && typeof(obj) === 'object') { //Если передаваемый объект - объект, тогда проверяем
+                if(stack.includes(obj)) { // Есть ли в стэке данный объект. Если есть, возвращаем true
+                    return true;
+                }
+
+                stack.push(obj); //Добавляем данный объект в стэк
+
+                for(let key in obj) { //Цикл для всех элементов объекта
+                    if(obj.hasOwnProperty(key) && isCyclic(obj[key], stack)) { // в рекурсию доавбляем следующий объект с текущим стэком, если там есть цикличность, то
+                        return true; //Возвращаем true
+                    }
+                }
+
+                stack.pop(); //Удаляем данный объект в стэк
+            }
+
+            return false; //Возвращаем false 
+        }
+        
+        function JSONToString(data){ //Функция JSON to string
+
+            if(isCyclic(data)){ // Проверка на наличие цикличности в объекте, если есть, вернём ошибку
+                throw new Error('cyclic object value');
+            }
+
+            function stringify(data){ //Функция для преобразования
+
+                if(typeof(data) === 'string'){ //Проверка на то, является ли элемент строкой
+                    return `"${data}"`; //Преобразование
+                }
+
+                if(typeof(data) === 'function'){ //Проверка на то, является ли элемент функцией
+                    return undefined; //Преобразование
+                }
+
+                if(typeof(data) === 'number'){ //Проверка на то, является ли элемент числом
+                    if(isNaN(data) || data === Infinity || data === -Infinity){ //Проверка на то, является ли число Nan, Infinity или -Infinity
+                        return "null"; //Преобразование
+                    }
+                    return `${data}`; //Преобразование
+                }
+
+                if(data === null){ //Проверка на то, является ли элемент null
+                    return "null"; //Преобразование
+                }
+
+                if(typeof(data) === 'boolean'){ //Проверка на то, является ли элемент булевым значением
+                    return `${data}`; //Преобразование
+                }
+
+                if(typeof(data) === 'bigint'){ //Проверка на то, является ли элемент большим числом (вызывает ошибку, если является)
+                    throw new Error("BigInt value can't be serialized in JSON");
+                }
+
+                if(typeof(data) === 'symbol'){ //Проверка на то, является ли элемент символом
+                    return undefined; //Преобразование
+                }
+
+                if(typeof(data) === 'undefined'){ //Проверка на то, является ли элемент андефайндом
+                    return undefined; //Преобразование
+                }
+
+                if(Array.isArray(data)){ //Проверка на то, является ли элемент массивом
+                    const arrayElements = data.map((el) => stringify(el)); //Преобразование каждого элемента массива 
+                    const arrayElementsWithoutUndefined = arrayElements.map((el) => { //Преобразование 'неправильных' значений массивов
+                        if(typeof(el) === 'undefined'){ 
+                            return 'null';
+                        }
+                        return el;
+                    });
+                    return `[${arrayElementsWithoutUndefined.join(",")}]`; //Преобразование массива
+                }
+
+                if(typeof(data) === "object"){ //Проверка, является ли элемент объектом
+                    let objectProperties = Object.keys(data); //Поулчение ключей объекта
+                    objectProperties = objectProperties.filter((key) =>{ //Удаление ненужных элементов объекта
+                        if(typeof(data[key]) === 'function' || typeof(data[key]) === 'symbol' || typeof(data[key]) === 'undefined'){
+                            return false;
+                        }
+                        return true;
+                    });
+                    
+                    if(objectProperties.length === 0){ //При пустом объекте, онт и возвращается
+                        return '{}';
+                    }
+
+                    objectProperties = objectProperties.map((key) => `"${key}":${stringify(data[key])}`); //Преобразование всех элементов объекта
+
+                    return `{${objectProperties.join(",")}}`; //Преобразование объекта
+                }
+            }
+
+            return stringify(data); //Возврат JSON в String
+        }
+
+
+        const exampleJSON = {
+            myame: 'Tadeck',
+            myinterests: [
+                'programming',
+                'games',
+                'artificial intelligence',
+                'business models'
+            ],
+            mydata: {
+                'age': 'not your business',
+                'something': 5,
+                'friends': [
+                    'A',
+                    {a1: "A1"},
+                    'B',
+                    'C'
+                ]
+            },
+            age: 85, 
+            virgin: true, 
+            func : () => 55,
+            arr: [3, true, () => 3, 'test', `test2`, "test3"],
+            n: null, 
+            un: undefined,
+        }
+        
+        console.group('JSON.stringify(exampleJSON)');
+        console.log(JSON.stringify(exampleJSON));
+        console.groupEnd();
+        console.group('JSONToString(exampleJSON)');
+        console.log(JSONToString(exampleJSON));
+        console.groupEnd();
+        console.group('JSONToString(exampleJSON) === JSON.stringify(exampleJSON)');
+        console.log(JSONToString(exampleJSON) === JSON.stringify(exampleJSON));
+        console.groupEnd();
+
+    </script>
+</body>
+</html>

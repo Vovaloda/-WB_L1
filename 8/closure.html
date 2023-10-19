@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 8 - о замыканиях</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+        
+        function closureFunction(functionsArray){  //Функция, которая возващает массив результатов функций
+            return async function(){ //Возвращает асинхронную функцию
+                const resultsFunctions = []; //массив для результатов вызовов функций 
+                for(let func of functionsArray){ //Цикл по всем элементам массива
+                    resultsFunctions.push(await func()); //Добавление результата функции (когда она уже выполнится)
+                }
+
+                return resultsFunctions; //Возвращает массив функций
+            }
+        }
+
+        const functionsArray = [
+            () => 1,
+            async () => {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return 3;
+            },
+            function(){
+                return 5;
+            },
+            async function(){
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return 9;
+            },
+        ];
+
+        const closureFunctionExample = closureFunction(functionsArray);
+        closureFunctionExample().then(result => console.log(result));
+
+    </script>
+</body>
+</html>

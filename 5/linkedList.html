@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 задача - JSON в связный список</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script >
+        'use strict';
+        
+        //Функция для преобразования JSON в связный список
+        function jsonToLinkedList(jsonData){
+            let data = JSON.parse(jsonData); //Получение даты из JSON
+
+            let head = null; //Переменная для головы списка
+            let current = null; //Переменная для текущего элемента списка
+
+            for(let el of data){ //Перебор всех элементов JSON 
+                const newNode = {value: el, next: null}; //Создание нового узла с установленным значением и пустой ссылкой на следующий элемент
+
+                if(!head){ //Если ещё нет головы списка, элемент устанавливается как голова списка
+                    head = newNode;
+                }
+                else{ //Если есть голова списка
+                    current.next = newNode; // Устанавливается ссылка на следующий элемент списка
+                }
+
+                current = newNode; //Текущий элемент равен созданному узлу
+            }
+
+            return head; //Возвращение головы односвязаного списка
+        }
+
+        //JSON-пример
+        const jsonData = `[ 
+            {"value": 5}, 
+            {"value": 9}, 
+            {"value": 3}
+        ]`;
+
+        const linkedList = jsonToLinkedList(jsonData); 
+
+        console.log("Односвязный список: ");
+        console.log(linkedList);
+
+        let currentNode = linkedList;
+
+        console.group("Элементы односвязного списка: ");
+        while(currentNode){ //Просмотр значение односвязного списка
+            console.log(currentNode.value);
+            currentNode = currentNode.next;
+        }
+        console.groupEnd();
+
+    </script>
+</body>
+</html>

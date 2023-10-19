@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12 задача - книга</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+
+        const book = {
+            title: 'Гарри Поттер',
+            author: 'Дж. К. Роулинг',
+            year: '1997',
+        }
+
+        //Второе решение с помощью циклов 
+
+        function getElementsOfBook(book){ //получение значений элементов книги
+            const resultArray = []; //Результирующий массив
+            for(let el in book){ //Проход по всем ключам книги
+                resultArray.push(book[el]); //Добавление в массив значение ключа книги
+            }
+
+            return resultArray; //Возвращение результирующего массива
+        }
+
+        function setElementsOfBook(book, newValues){ //Установка новых значений для элементов книги
+            let index = 0; //Индекс
+            for(let el in book){ //Проход по всем ключам книги
+                book[el] = newValues[index]; //Изменение значения у ключа книги 
+                index++; //Увеличение индекса
+            }
+        }
+
+        console.group('Получение данных до изменений');
+        console.log([...getElementsOfBook(book)]);
+        console.groupEnd();
+
+        setElementsOfBook(book, ['Пять языков любви', 'Гэри Чапман', '1992'])
+
+        console.group('Получение данных после изменений');
+        console.log([...getElementsOfBook(book)]);
+        console.groupEnd();
+        
+        
+    </script>
+</body>
+</html>

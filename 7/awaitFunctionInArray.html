@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6 задача - задача о коллекции функций</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+        
+        async function awaitFunctionInArray(functionsArray){ //Асинхронная функция, чтобы функции вызывались поочерёдно и писался их порядковый номер
+            for(let i = 0; i < functionsArray.length; i++){ //цикл по всем элементам массива
+                if(typeof(functionsArray[i]) === 'function'){ //если элемент массива функция
+                    await functionsArray[i](); //Получаем выполнение функции
+                    console.log(i+1); //Выводим порядковый номер функции
+                }
+            }
+        }
+
+        const functionsArray = [
+            () => {
+                console.log('Первая функция. Стрелочная, синхронная. Выполнена');
+            }, 
+            async () => {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log('Вторая фнукция. Асинхронная, стрелочная. Выполнена');
+            },
+            function(){
+                console.log('Третья функция. Синхронная. Выполнена');
+            },
+            async function(){
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log('Четвёртая функция. Асинхронная. Выполнена');
+            },
+            function(){
+                console.log('Пятая функция. Синхронная. Выполнена');
+            }
+        ];
+
+        awaitFunctionInArray(functionsArray);
+
+    </script>
+</body>
+</html>

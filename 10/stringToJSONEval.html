@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 задача - string to JSON</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+        
+        //Второе решение с помощью eval
+        function jsonParse(json) { //Функция преобразования строки в объект
+            return eval(`(${json})`); //Преобразование
+        }
+
+        const json = '{"myame":"Tadeck","myinterests":["programming","games","artificial intelligence","business models"],"mydata":{"age":"not your business","something":5,"friends":["A",{"a1":"A1"},"B","C"]},"age":85,"virgin":true,"arr":[3,true,null,"test","test2","test3"],"n":null}';
+        console.log(jsonParse(json));
+
+    </script>
+</body>
+</html>

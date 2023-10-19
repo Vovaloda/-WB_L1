@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1 задача про палиндром</title>
+</head>
+<body>
+    
+    <p>Откройте инструменты разработчика, консоль</p>
+
+    <script>
+        'use strict';
+
+        const palindroms = [
+            "аргентина манит негра", //Палиндром
+            "Madam, I'm Adam", //Палиндром
+            "Не палиндром", //Не палиндром
+            '', //Палиндром 
+            '1235321', //Палиндром
+            '123321', //Палиндром
+        ];
+
+        //Вторая реализация через указатели
+        //Принимает строку, возвращает true false
+        function isPalindrom2(str){
+            str = str
+                .replaceAll(/[^\da-zA-Zа-яёА-ЯЁ]/g, "") //Убирает любые символы, кроме букв, цифр
+                .toLowerCase(); //Приводит к нижнему регистру 
+
+            let center = (str.length-1)/2;  //Позиция по середине
+            let right = str.length-1; //Правый указатель
+            let left = 0; //Левый указатель
+
+            while(left < center){ //Цикл, пока не дойдёт до середины
+                if(str[left] !== str[right]){ //Если буквы на указателях не совпадают, возвращает false
+                    return false;
+                }
+
+                left++; //Сдвигает левый указатель
+                right--; //Сдвигает правый указатель
+            }
+
+            return true; //Если все буквы совпали, возвращает true
+        }
+
+        console.group('Функция isPalindrom2(указатели) :');
+        palindroms.forEach(el => {
+            console.log(el + " - палиндром ? " + isPalindrom2(el));
+        });
+        console.groupEnd();
+
+    </script>
+</body>
+</html>

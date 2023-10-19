@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24 задача - таблица с данными</title>
+
+    <style>
+        table, th, td{
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+
+    <p>Для сортировки колонки, нажмите на обозначение колонки</p>
+    
+    <table>
+    <tbody>
+
+    </tbody>
+    </table>
+    <div class="pagination"></div>
+
+    <script>
+        'use strict';
+        
+        //Ссылка
+        const url = 'http://www.filltext.com/?rows=1000&fname=%7BfirstName%7D&lname=%7BlastName%7D&tel=%7Bphone%7Cformat%7D&address=%7BstreetAddress%7D&city=%7Bcity%7D&state=%7BusState%7Cabbr%7D&zip=%7Bzip%7D&pretty=true';
+
+        //Загружаемые данные
+        let dataFromJSON; 
+
+        const tableTbody = document.querySelector('tbody'); //Получение элемента тела таблицы
+        const paginationField = document.querySelector('.pagination'); //Поулчение элемента места под пагинацию
+
+        const amountDataInTime = 50; //Количество загружаемых постов за раз
+        let currentPage = 1; //текущая страница
+        
+
+        window.addEventListener('DOMContentLoaded', async ()=>{ //При загрузке страницы
+            const response = await fetch(url); //Поулчение данных 
+            dataFromJSON = await response.json(); //Приведение их в удобный вид 
+
+            createTable(dataFromJSON); //Отправка данных для создания таблицы
+            loadPartOfItems(dataFromJSON.slice(0, 50)); //Отправка данных для загрузки содержимого таблицы
+            getPages(dataFromJSON.length); //Отправка данных для создания пагинации
+        });
+
+        function getPages(amount){ //ФУнкция для получения пагинации
+            const pagesAmount = Math.ceil(amount/amountDataInTime); //Округление страниц в большую сторону при делении на количество данных за раз
+
+            for(let i = 1; i <= pagesAmount; i++){ //В цикле создаю кнопку, значение которой равно i 
+                paginationField.innerHTML += `<button>${i}</button>`;
+            }
+        }
+
+        paginationField.addEventListener('click', (e) => { // Ивент при клике на пагинацию
+            if(e.target.tagName === 'BUTTON'){ //Если это кнопка
+                currentPage = +e.target.textContent; //Получение значения данной кнопки в виде числа
+                const last = currentPage * amountDataInTime; //Расчёт крайнего загружаемого данного 
+                const first = currentPage * amountDataInTime - amountDataInTime; //Расчёт первого загружаемого данного 
+                loadPartOfItems(dataFromJSON.slice(first, last)); //Отправка данных для загрузки содержимого таблицы
+            } 
+        });
+
+        function createTable(data){ //ФУнкция для создания таблицы
+            const headerItems = Object.keys(data[0]); //Поулчение всех ключей для таблицы из полученных данных 
+
+            let headerDiv = '<tr>' //Создание элемента tr
+            let bodyTableDiv = ''; //Место для элементов таблицы
+            
+            for(let i = 0; i < headerItems.length; i++){ //В цикле от 0 до количества ключей 
+                headerDiv += `<th>${headerItems[i]}</th>`; //Добавление загаловка с названием ключа
+            }
+
+            headerDiv += '</tr>'; //Закрывающий тэг 
+
+            for(let i = 0; i<amountDataInTime; i++){ //В цикле от 0 до загружаемых за раз данных 
+                bodyTableDiv += '<tr>' //Добавление открывающего тэга 
+                for(let j = 0; j< headerItems.length; j++){ //В цикле от 0 до количества ключей 
+                    bodyTableDiv += '<td></td>'; //Добавление ячейки
+                }
+                bodyTableDiv += '</tr>' //Добавление закрывающего тэга 
+            }
+
+            tableTbody.innerHTML = headerDiv; //Доабвление данных в таблицу
+            tableTbody.innerHTML += bodyTableDiv; //Доабвление данных в таблицу
+
+            const headersTh = document.querySelectorAll('th'); //Поиск всех элементов th 
+
+
+            headersTh.forEach(el => { //Для всех найденных элементов th 
+                el.addEventListener('click', (e)=>{ //Добавление эвента по клику 
+
+                    let attribute; //Переменная для аттрибута ячейки (или типа сортировки)
+
+                    if(e.target.getAttribute('sort-type')){ //Если атрибут есть 
+                        attribute = e.target.getAttribute('sort-type'); //Получить в переменную значение аттрибута
+                        e.target.removeAttribute('sort-type'); //Удалить аттрибут у ячейки
+                    }
+                    else if(!e.target.getAttribute('sort-type')){ //Если аттрибута нету
+                        e.target.setAttribute('sort-type', 'dec'); //Назначить аттрибут ячейке
+                    }
+
+                    const rowName = e.target.textContent; //Получение значения ключа 
+                    const last = currentPage * amountDataInTime; //Получение крайнего загружаемого данного 
+                    const first = currentPage * amountDataInTime - amountDataInTime; //Получение первого загружаемого данного 
+                    
+                    sortTableByRow(dataFromJSON.slice(first, last), rowName, attribute); //Сортировка таблицы по строчке
+                });
+            });
+        }
+
+        function loadPartOfItems(arr){ //Загрузка дынных в таблицу 
+            const trList = document.querySelectorAll('tr'); //Поиск всех tr
+            const headerItems = Object.keys(arr[0]); //Получение всех ключей таблицы
+
+            for(let i = 0; i < amountDataInTime; i++){ //В цикле от 0 до количества загружаемых данных за раз
+                for(let j = 0; j < headerItems.length; j++){ //В цикле от 0 до количества ключей таблицы 
+                    trList[i+1].children[j].textContent = arr[i][`${headerItems[j]}`]; //Добавление данных в ячейку
+                }
+            }
+        }
+
+        function sortTableByRow(data, rowName, type){ //Функция сортировки по строке
+            const sortedArrayByRowData = data.sort((a, b) => { //Создаю новую переменную для отсортированного массива 
+                if(typeof(a[rowName]) === 'string'){ //Если элемент строка, то сравниваю его как строки в зависимости от типа сортировки
+                    return type === 'dec' ? a[rowName].localeCompare(b[rowName]) : -a[rowName].localeCompare(b[rowName]);
+                }
+                else if(typeof(a[rowName]) === 'number'){ //Если элемент число, то сравниваю его (вычитаю из одного другой) как числа в зависимости от типа сортировки
+                    return type === 'dec' ?  a[rowName] - b[rowName] : b[rowName] - a[rowName];
+                }
+            });
+
+            loadPartOfItems(sortedArrayByRowData); //Обновляю таблицу с отсортированнами данными
+        }
+
+    </script>
+</body>
+</html>

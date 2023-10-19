@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>25 задача - создание элемента со стилем</title>
+</head>
+<body>
+
+    <script>
+        'use strict';
+        
+        //Принимает название тега, название тега его родителя и стили в виде строки
+        function createElementAndStyle(tagName, parentTagName, styles){ //Функция для создания элемента со стилями и доавбелния его в другой элемент
+            const el = document.createElement(tagName); //Создание элемента
+            el.style.cssText = styles; //Добавление созданному элементу стилей 
+            const parentEl = document.querySelector(parentTagName); //Получение элемента-родителя
+            parentEl.appendChild(el); //Добавление элемента, как ребёнка, элементу-родителю 
+        }
+
+        createElementAndStyle('div', 'body', 'width: 50px; height: 90px; background-color: blue; padding: 5px;');
+        createElementAndStyle('p', 'div', 'width: 90%; height: 15px; border: 1px solid black; background-color: white;');
+
+    </script>
+</body>
+</html>
